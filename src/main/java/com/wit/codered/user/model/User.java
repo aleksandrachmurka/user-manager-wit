@@ -10,17 +10,20 @@ public class User {
     private long id;
     private String firstName;
     private String lastName;
+    private String city;
 
-    public User(long id, String firstName, String lastName) {
+    public User(long id, String firstName, String lastName, String city) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.city = city;
     }
 
     public User() {
         this.id = -1;
         this.firstName = "";
         this.lastName = "";
+        this.city = "";
     }
 
     public long getId() {
@@ -47,6 +50,14 @@ public class User {
         this.lastName = lastName;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,18 +65,19 @@ public class User {
         User user = (User) o;
         return id == user.id &&
                 firstName.equals(user.firstName) &&
-                lastName.equals(user.lastName);
+                lastName.equals(user.lastName) &&
+                city.equals(user.city);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName);
+        return Objects.hash(id, firstName, lastName, city);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, firstName='%s', lastName='%s']",
-                id, firstName, lastName);
+                "User[id=%d, firstName='%s', lastName='%s', city='%s']",
+                id, firstName, lastName, city);
     }
 }

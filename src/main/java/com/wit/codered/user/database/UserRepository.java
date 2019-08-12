@@ -33,26 +33,33 @@ public class UserRepository {
     NamedParameterJdbcTemplate jdbcTemplate;
 
     public List<User> findAll() {
-        return jdbcTemplate.query("SELECT id, first_name, last_name FROM users", UserRepository::mapRow);
+        return jdbcTemplate.query("SELECT id, first_name, last_name, city FROM users", UserRepository::mapRow);
     }
 
     public List<User> findByFirstName(String firstName) {
         return jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM users WHERE first_name = :first_name", singletonMap("first_name", firstName),
+                "SELECT id, first_name, last_name, city FROM users WHERE first_name = :first_name", singletonMap("first_name", firstName),
                 UserRepository::mapRow
         );
     }
 
     public List<User> findByLastName(String lastName) {
         return jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM users WHERE last_name = :last_name", singletonMap("last_name", lastName),
+                "SELECT id, first_name, last_name, city FROM users WHERE last_name = :last_name", singletonMap("last_name", lastName),
+                UserRepository::mapRow
+        );
+    }
+
+    public List<User> findByLastCity(String city) {
+        return jdbcTemplate.query(
+                "SELECT id, first_name, last_name, city FROM users WHERE city = :city", singletonMap("city", city),
                 UserRepository::mapRow
         );
     }
 
     public User findById(long id) {
         List<User> userList = jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM users WHERE id = :id", singletonMap("id", id),
+                "SELECT id, first_name, last_name, city FROM users WHERE id = :id", singletonMap("id", id),
                 UserRepository::mapRow
         );
 
@@ -64,13 +71,15 @@ public class UserRepository {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("first_name", user.getFirstName());
             parameters.put("last_name", user.getLastName());
-            jdbcTemplate.update("INSERT INTO users(first_name, last_name) VALUES (:first_name,:last_name)", parameters);
+            parameters.put("city", user.getCity());
+            jdbcTemplate.update("INSERT INTO users(first_name, last_name, city) VALUES (:first_name,:last_name, :city)", parameters);
         } else {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("first_name", user.getFirstName());
             parameters.put("last_name", user.getLastName());
+            parameters.put("city", user.getCity());
             parameters.put("id", user.getId());
-            jdbcTemplate.update("update users set first_name = :first_name, last_name = :last_name where id = :id", parameters);
+            jdbcTemplate.update("update users set first_name = :first_name, last_name = :last_name, city = :city where id = :id", parameters);
         }
     }
 
@@ -79,7 +88,7 @@ public class UserRepository {
     }
 
     private static User mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new User(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"));
+        return new User(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("city"));
     }
 
 
